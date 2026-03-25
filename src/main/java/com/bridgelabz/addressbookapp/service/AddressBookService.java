@@ -1,6 +1,7 @@
 package com.bridgelabz.addressbookapp.service;
 
 import com.bridgelabz.addressbookapp.dto.AddressBookDTO;
+import com.bridgelabz.addressbookapp.exception.AddressBookException;
 import com.bridgelabz.addressbookapp.model.AddressBookData;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class AddressBookService implements IAddressBookService {
 
     private final List<AddressBookData> addressBookList = new ArrayList<>();
-    private int contactIdCounter = 1;
+    private int count = 1;
 
     @Override
     public List<AddressBookData> getAddressBookData() {
@@ -23,29 +24,29 @@ public class AddressBookService implements IAddressBookService {
         return addressBookList.stream()
                 .filter(contact -> contact.getId() == id)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new AddressBookException("Address Book contact not found for id: " + id));
     }
 
     @Override
     public AddressBookData createAddressBookData(AddressBookDTO addressBookDTO) {
-        AddressBookData newContact = new AddressBookData(contactIdCounter++, addressBookDTO);
+        AddressBookData newContact = new AddressBookData(count++, addressBookDTO.getName(),
+                addressBookDTO.getAddress(), addressBookDTO.getPhoneNumber());
         addressBookList.add(newContact);
         return newContact;
     }
 
     @Override
     public AddressBookData updateAddressBookData(int id, AddressBookDTO addressBookDTO) {
-        AddressBookData existingContact = getAddressBookDataById(id);
-        if (existingContact != null) {
-            existingContact.setName(addressBookDTO.getName());
-            existingContact.setCity(addressBookDTO.getCity());
-            existingContact.setPhoneNumber(addressBookDTO.getPhoneNumber());
-        }
-        return existingContact;
+        AddressBookData contact = this.getAddressBookDataById(id);
+        contact.setName(addressBookDTO.getName());
+        contact.setAddress(addressBookDTO.getAddress());
+        contact.setPhoneNumber(addressBookDTO.getPhoneNumber());
+        return contact;
     }
 
     @Override
     public void deleteAddressBookData(int id) {
-        addressBookList.removeIf(contact -> contact.getId() == id);
+        AddressBookData contact = this.getAddressBookDataById(id);
+        addressBookList.remove(contact);
     }
 }

@@ -1,21 +1,19 @@
 package com.bridgelabz.addressbookapp.model;
 
-import com.bridgelabz.addressbookapp.dto.AddressBookDTO;
-
 public class AddressBookData {
     private int id;
     private String name;
-    private String city;
+    private String address;
     private String phoneNumber;
 
     public AddressBookData() {
     }
 
-    public AddressBookData(int id, AddressBookDTO dto) {
+    public AddressBookData(int id, String name, String address, String phoneNumber) {
         this.id = id;
-        this.name = dto.getName();
-        this.city = dto.getCity();
-        this.phoneNumber = dto.getPhoneNumber();
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getId() {
@@ -34,12 +32,12 @@ public class AddressBookData {
         this.name = name;
     }
 
-    public String getCity() {
-        return city;
+    public String getAddress() {
+        return address;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPhoneNumber() {
